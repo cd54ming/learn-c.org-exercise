@@ -5,6 +5,7 @@
 
 void stack_init(stack_type *stack) {
     stack->top = NULL;
+    stack->size = 0;
 }
 
 void stack_push(stack_type *stack, int val) {
@@ -12,6 +13,7 @@ void stack_push(stack_type *stack, int val) {
     new_node->val = val;
     new_node->next = stack->top;
     stack->top = new_node;
+    stack->size++;
 }
 
 int stack_pop(stack_type *stack) {
@@ -22,6 +24,7 @@ int stack_pop(stack_type *stack) {
     int retval = temp->val;
     stack->top = stack->top->next;
     free(temp);
+    stack->size--;
     return retval;
 }
 
@@ -41,18 +44,6 @@ void stack_print(stack_type stack) {
     }
 }
 
-int stack_size(stack_type stack) {
-    int size = 0;
-    node_type *current = stack.top;
-
-    while (current != NULL) {
-        size++;
-        current = current->next;
-    }
-
-    return size;
-}
-
 bool stack_is_empty(stack_type stack) {
     return (stack.top == NULL);
 }
@@ -67,4 +58,5 @@ void stack_free(stack_type *stack) {
     }
 
     stack->top = NULL;
+    stack->size = 0;
 }
