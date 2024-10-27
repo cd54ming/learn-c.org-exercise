@@ -28,15 +28,15 @@ int stack_pop(stack_type *stack) {
     return retval;
 }
 
-int stack_peek(stack_type stack) {
-    if (stack.top == NULL) {
+int stack_peek(stack_type *stack) {
+    if (stack->top == NULL) {
         return -1;
     }
-    return stack.top->val;
+    return stack->top->val;
 }
 
-void stack_print(stack_type stack) {
-    node_type *current = stack.top;
+void stack_print(stack_type *stack) {
+    node_type *current = stack->top;
 
     while (current != NULL) {
         printf("%d\n", current->val);
@@ -44,8 +44,8 @@ void stack_print(stack_type stack) {
     }
 }
 
-bool stack_is_empty(stack_type stack) {
-    return (stack.top == NULL);
+bool stack_is_empty(stack_type *stack) {
+    return (stack->top == NULL);
 }
 
 void stack_free(stack_type *stack) {

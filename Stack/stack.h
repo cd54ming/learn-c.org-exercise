@@ -18,11 +18,11 @@ void stack_push(stack_type *stack, int val);
 
 int stack_pop(stack_type *stack);
 
-int stack_peek(stack_type stack);
+int stack_peek(stack_type *stack);
 
-void stack_print(stack_type stack);
+void stack_print(stack_type *stack);
 
-bool stack_is_empty(stack_type stack);
+bool stack_is_empty(stack_type *stack);
 
 void stack_free(stack_type *stac);
 
