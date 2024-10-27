@@ -30,6 +30,10 @@ This repository contains my practice exercises from the [learn-c.org](https://ww
     - [Function Pointers](https://www.learn-c.org/en/Function_Pointers)
     - [Bitmasks](https://www.learn-c.org/en/Bitmasks)
 
+- **Self-practice**
+    - Stack
+    - Queue
+
 ## Acknowledgements
 
 Thanks to [learn-c.org](https://www.learn-c.org/) for providing the tutorials and exercises.
