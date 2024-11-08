@@ -15,6 +15,8 @@ void test_binary_tree_node_queue(void) {
     BinaryTreeNode node1 = { .val = 1, .left = NULL, .right = NULL };
     BinaryTreeNode node2 = { .val = 2, .left = NULL, .right = NULL };
     BinaryTreeNode node3 = { .val = 3, .left = NULL, .right = NULL };
+    BinaryTreeNode node4 = { .val = 3, .left = NULL, .right = NULL };
+    BinaryTreeNode node5 = { .val = 3, .left = NULL, .right = NULL };
 
     // Enqueue nodes
     queue_enqueue(queue, &node1);
@@ -25,6 +27,12 @@ void test_binary_tree_node_queue(void) {
     assert(queue_peek(queue) == &node1);
 
     queue_enqueue(queue, &node3);
+    assert(queue_peek(queue) == &node1);
+
+    queue_enqueue(queue, &node4);
+    assert(queue_peek(queue) == &node1);
+
+    queue_enqueue(queue, &node5);
     assert(queue_peek(queue) == &node1);
 
     // Dequeue nodes
@@ -38,6 +46,14 @@ void test_binary_tree_node_queue(void) {
 
     dequeued_node = queue_dequeue(queue);
     assert(dequeued_node == &node3);
+    assert(queue_peek(queue) == &node4);
+
+    dequeued_node = queue_dequeue(queue);
+    assert(dequeued_node == &node4);
+    assert(queue_peek(queue) == &node5);
+
+    dequeued_node = queue_dequeue(queue);
+    assert(dequeued_node == &node5);
     assert(queue_is_empty(queue) == true);
 
     // Free queue

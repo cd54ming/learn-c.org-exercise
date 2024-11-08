@@ -70,7 +70,7 @@ BinaryTreeNode* queue_dequeue(Queue* queue) {
     QueueNode* temp = queue->front;
     BinaryTreeNode* retval = temp->val;
     queue->front = queue->front->next;
-    if (queue->front == queue->rear) {
+    if (queue->front == NULL) {
         queue->rear = NULL;
     }
     free(temp);
@@ -113,7 +113,5 @@ void queue_free(Queue* queue) {
         free(prev);
     }
 
-    queue->front = NULL;
-    queue->rear = NULL;
-    queue->size = 0;
+    free(queue);
 }
