@@ -97,7 +97,5 @@ void queue_free(queue_t *queue) {
         free(current);
         current = next;
     }
-    queue->front = NULL;
-    queue->rear = NULL;
-    queue->size = 0;
+    free(queue);
 }
