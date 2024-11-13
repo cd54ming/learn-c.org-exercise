@@ -474,7 +474,7 @@ void traverse_in_order(BinaryTree* tree) {
     printf("\n");
 }
 
-void traverse_pre_order_helper(BinaryTreeNode* root) {
+static void traverse_pre_order_helper(BinaryTreeNode* root) {
     if (root == NULL) {
         return;
     }
@@ -494,7 +494,7 @@ void traverse_pre_order(BinaryTree* tree) {
     printf("\n");
 }
 
-void traverse_post_order_helper(BinaryTreeNode* root) {
+static void traverse_post_order_helper(BinaryTreeNode* root) {
     if (root == NULL) {
         return;
     }
@@ -561,7 +561,7 @@ int get_size_bfs(BinaryTree* tree) {
     return size;
 }
 
-int get_size_dfs_helper(BinaryTreeNode* node) {
+static int get_size_dfs_helper(BinaryTreeNode* node) {
     if (node == NULL) {
         return 0;
     }
@@ -595,21 +595,17 @@ int get_depth(BinaryTreeNode* root, BinaryTreeNode* node) {
         return -1;
     }
 
-    if (node == NULL || root == node) {
+    if (root == node) {
         return 0;
     }
 
-    if (root->left == node || root->right == node) {
-        return 1;
-    }
-
     int left_depth = get_depth(root->left, node);
-    if (left_depth > 0) {
+    if (left_depth >= 0) {
         return 1 + left_depth;
     }
 
     int right_depth = get_depth(root->right, node);
-    if (right_depth > 0) {
+    if (right_depth >= 0) {
         return 1 + right_depth;
     }
 
@@ -648,7 +644,7 @@ bool is_in_tree_bfs(BinaryTree* tree, BinaryTreeNode* node) {
     return false;
 }
 
-bool is_in_tree_dfs_helper(BinaryTreeNode* current_node, BinaryTreeNode* node) {
+static bool is_in_tree_dfs_helper(BinaryTreeNode* current_node, BinaryTreeNode* node) {
     if (current_node == NULL) {
         return false;
     }
@@ -775,7 +771,7 @@ bool is_full_bfs(BinaryTree* tree) {
     return true;
 }
 
-bool is_full_dfs_helper(BinaryTreeNode* node) {
+static bool is_full_dfs_helper(BinaryTreeNode* node) {
     if (node == NULL) {
         return true;
     }
@@ -803,4 +799,499 @@ bool is_full_dfs(BinaryTree* tree) {
     return is_full_dfs_helper(tree->root);
 }
 
-// ------------------------ TODO ------------------------
+bool is_complete_bfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    Queue* queue = queue_init();
+    queue_enqueue(queue, tree->root);
+    bool end_of_complete_tree = false;
+    while (!queue_is_empty(queue)) {
+        BinaryTreeNode* current_node = queue_dequeue(queue);
+        if (current_node == NULL) {
+            end_of_complete_tree = true;
+        } else {
+            if (end_of_complete_tree) {
+                queue_free(queue);
+                return false;
+            }
+            queue_enqueue(queue, current_node->left);
+            queue_enqueue(queue, current_node->right);
+        }
+    }
+    queue_free(queue);
+
+    return true;
+}
+
+static bool is_complete_dfs_helper(int height, BinaryTreeNode* node, bool* end_of_complete_tree) {
+    if (node == NULL) {
+        if (height == 0) {
+            return true;
+        } else if (height == 1) {
+            *end_of_complete_tree = true;
+            return  true;
+        } else {
+            return false;
+        }
+    }
+
+    if (height == 1) {
+        return !(*end_of_complete_tree);
+    }
+
+    return is_complete_dfs_helper(height - 1, node->left, end_of_complete_tree) &&
+        is_complete_dfs_helper(height - 1, node->right, end_of_complete_tree);
+}
+
+bool is_complete_dfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true; // 空樹被認為是完全二叉樹
+    }
+
+    int height = get_height(tree->root);
+    bool end_of_complete_tree = false;
+    bool result = is_complete_dfs_helper(height, tree->root, &end_of_complete_tree);
+    return result;
+}
+
+bool is_perfect_bfs_alternative(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    int height = get_height(tree->root);
+    int expected_total_nodes = (1 << height) - 1;
+    int actual_total_nodes = get_size_bfs(tree);
+
+    return (actual_total_nodes == expected_total_nodes);
+}
+
+bool is_perfect_bfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    int node_counts = 0;
+    bool seen_null_child = false;
+    Queue* queue = queue_init();
+    queue_enqueue(queue, tree->root);
+    while (!queue_is_empty(queue)) {
+        BinaryTreeNode* current_node = queue_dequeue(queue);
+
+        if (current_node == NULL) {
+            seen_null_child = true;
+        } else {
+            if (seen_null_child) {
+                queue_free(queue);
+                return false;
+            }
+            node_counts++;
+            queue_enqueue(queue, current_node->left);
+            queue_enqueue(queue, current_node->right);
+        }
+    }
+    queue_free(queue);
+    return (((node_counts + 1) & node_counts) == 0);
+}
+
+static bool is_perfect_dfs_alternative_helper(int height, BinaryTreeNode* node) {
+    if (node == NULL) {
+        return (height == 0);
+    }
+
+    return is_perfect_dfs_alternative_helper(height - 1, node->left) &&
+        is_perfect_dfs_alternative_helper(height - 1, node->right);
+}
+
+bool is_perfect_dfs_alternative(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    return is_perfect_dfs_alternative_helper(get_height(tree->root), tree->root);
+}
+
+static int is_perfect_dfs_helper(BinaryTreeNode* current_node, int depth) {
+    if (current_node == NULL) {
+        return depth;
+    }
+
+    int left_depth = is_perfect_dfs_helper(current_node->left, depth + 1);
+    if (left_depth == -1) {
+        return -1;
+    }
+
+    int right_depth = is_perfect_dfs_helper(current_node->right, depth + 1);
+    if (right_depth == -1) {
+        return -1;
+    }
+
+    if (left_depth != right_depth) {
+        return -1;
+    }
+
+    return left_depth;
+}
+
+bool is_perfect_dfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    return (is_perfect_dfs_helper(tree->root, 0) != -1);
+}
+
+// not good at performance
+bool is_balanced_bfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    Queue* queue = queue_init();
+    queue_enqueue(queue, tree->root);
+    while (!queue_is_empty(queue)) {
+        BinaryTreeNode* current_node = queue_dequeue(queue);
+
+        int left_height = 0;
+        int right_height = 0;
+
+        if (current_node->left != NULL) {
+            queue_enqueue(queue, current_node->left);
+            left_height = get_height(current_node->left);
+        }
+
+        if (current_node->right != NULL) {
+            queue_enqueue(queue, current_node->right);
+            right_height = get_height(current_node->right);
+        }
+
+        if (abs(left_height - right_height) > 1) {
+            queue_free(queue);
+            return false;
+        }
+    }
+    queue_free(queue);
+    return true;
+}
+
+static int is_balanced_dfs_helper(BinaryTreeNode* node) {
+    if (node == NULL) {
+        return 0;
+    }
+
+    int left_height = is_balanced_dfs_helper(node->left);
+    if (left_height == -1) {
+        return -1; // 左子樹不平衡
+    }
+
+    int right_height = is_balanced_dfs_helper(node->right);
+    if (right_height == -1) {
+        return -1; // 右子樹不平衡
+    }
+
+    if (abs(left_height - right_height) > 1) {
+        return -1; // 當前節點不平衡
+    }
+
+    return 1 + (left_height > right_height ? left_height : right_height);
+}
+
+bool is_balanced_dfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    return (is_balanced_dfs_helper(tree->root) != -1);
+}
+
+bool is_skewed_bfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    Queue* queue = queue_init();
+    queue_enqueue(queue, tree->root);
+    while (!queue_is_empty(queue)) {
+        BinaryTreeNode* current_node = queue_dequeue(queue);
+        if (current_node->left != NULL) {
+            if (current_node->right != NULL) {
+                queue_free(queue);
+                return false;
+            }
+            queue_enqueue(queue, current_node->left);
+        } else {
+            if (current_node->right == NULL) {
+                break;
+            }
+            queue_enqueue(queue, current_node->right);
+        }
+    }
+    queue_free(queue);
+    return true;
+}
+
+static bool is_skewed_dfs_helper(BinaryTreeNode* node) {
+    if (node == NULL) {
+        return true;
+    }
+
+    if (node->left) {
+        if (node->right) {
+            return false;
+        }
+        return is_skewed_dfs_helper(node->left);
+    }
+
+    if (node->right) {
+        return is_skewed_dfs_helper(node->right);
+    }
+
+    return true;
+}
+
+bool is_skewed_dfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    return is_skewed_dfs_helper(tree->root);
+}
+
+bool is_left_skewed_bfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    Queue* queue = queue_init();
+    queue_enqueue(queue, tree->root);
+    while (!queue_is_empty(queue)) {
+        BinaryTreeNode* current_node = queue_dequeue(queue);
+        if (current_node->right) {
+            queue_free(queue);
+            return false;
+        }
+        if (current_node->left) {
+            queue_enqueue(queue, current_node->left);
+        }
+    }
+    queue_free(queue);
+
+    return true;
+}
+
+static bool is_left_skewed_dfs_helper(BinaryTreeNode* node) {
+    if (node == NULL) {
+        return true;
+    }
+    if (node->right != NULL) {
+        return false;
+    }
+    return is_left_skewed_dfs_helper(node->left);
+}
+
+bool is_left_skewed_dfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    return is_left_skewed_dfs_helper(tree->root);
+}
+
+bool is_right_skewed_bfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    Queue* queue = queue_init();
+    queue_enqueue(queue, tree->root);
+    while (!queue_is_empty(queue)) {
+        BinaryTreeNode* current_node = queue_dequeue(queue);
+        if (current_node->left) {
+            queue_free(queue);
+            return false;
+        }
+        if (current_node->right) {
+            queue_enqueue(queue, current_node->right);
+        }
+    }
+    queue_free(queue);
+
+    return true;
+}
+
+static bool is_right_skewed_dfs_helper(BinaryTreeNode* node) {
+    if (node == NULL) {
+        return true;
+    }
+    if (node->left != NULL) {
+        return false;
+    }
+    return is_right_skewed_dfs_helper(node->right);
+}
+
+bool is_right_skewed_dfs(BinaryTree* tree) {
+    binary_tree_check_valid(tree);
+
+    if (tree->root == NULL) {
+        return true;
+    }
+
+    return is_right_skewed_dfs_helper(tree->root);
+}
+
+static bool is_subtree_bfs_helper(BinaryTreeNode* tree_node, BinaryTreeNode* subtree_node) {
+    Queue* queue_tree = queue_init();
+    Queue* queue_subtree = queue_init();
+
+    queue_enqueue(queue_tree, tree_node);
+    queue_enqueue(queue_subtree, subtree_node);
+
+    while (!queue_is_empty(queue_tree) && !queue_is_empty(queue_subtree)) {
+        BinaryTreeNode* current_tree_node = queue_dequeue(queue_tree);
+        BinaryTreeNode* current_subtree_node = queue_dequeue(queue_subtree);
+
+        if (current_tree_node == NULL && current_subtree_node == NULL) {
+            continue;
+        }
+
+        if (current_tree_node == NULL || current_subtree_node == NULL) {
+            queue_free(queue_tree);
+            queue_free(queue_subtree);
+            return false;
+        }
+
+        if (current_tree_node->val != current_subtree_node->val) {
+            queue_free(queue_tree);
+            queue_free(queue_subtree);
+            return false;
+        }
+
+        queue_enqueue(queue_tree, current_tree_node->left);
+        queue_enqueue(queue_subtree, current_subtree_node->left);
+
+        queue_enqueue(queue_tree, current_tree_node->right);
+        queue_enqueue(queue_subtree, current_subtree_node->right);
+    }
+
+    bool result = queue_is_empty(queue_tree) && queue_is_empty(queue_subtree);
+    queue_free(queue_tree);
+    queue_free(queue_subtree);
+    return result;
+}
+
+bool is_subtree_bfs(BinaryTree* tree, BinaryTree* subtree) {
+    binary_tree_check_valid(tree);
+    binary_tree_check_valid(subtree);
+
+    if (subtree->root == NULL) {
+        return true;
+    }
+
+    if (tree->root == NULL) {
+        return false;
+    }
+
+    Queue* queue = queue_init();
+    queue_enqueue(queue, tree->root);
+
+    while (!queue_is_empty(queue)) {
+        BinaryTreeNode* current_node = queue_dequeue(queue);
+
+        if (current_node->val == subtree->root->val) {
+            if (is_subtree_bfs_helper(current_node, subtree->root)) {
+                queue_free(queue);
+                return true;
+            }
+            queue_free(queue);
+            return false;
+        }
+
+        if (current_node->left) {
+            queue_enqueue(queue, current_node->left);
+        }
+
+        if (current_node->right) {
+            queue_enqueue(queue, current_node->right);
+        }
+    }
+
+    queue_free(queue);
+    return false;
+}
+
+static bool is_subtree_dfs_helper(BinaryTreeNode* tree_node, BinaryTreeNode* subtree_node) {
+    if (tree_node == NULL && subtree_node == NULL) {
+        return true;
+    }
+
+    if (tree_node == NULL || subtree_node == NULL) {
+        return false;
+    }
+
+    if (tree_node->val != subtree_node->val) {
+        return false;
+    }
+
+    return is_subtree_dfs_helper(tree_node->left, subtree_node->left) &&
+        is_subtree_dfs_helper(tree_node->right, subtree_node->right);
+}
+
+static BinaryTreeNode* find_subtree_root(BinaryTreeNode* tree_node, BinaryTreeNode* subtree_root) {
+    if (subtree_root == NULL || tree_node == NULL) {
+        return  NULL;
+    }
+
+    if (tree_node->val == subtree_root->val) {
+        return tree_node;
+    }
+
+    BinaryTreeNode* left_result = find_subtree_root(tree_node->left, subtree_root);
+    if (left_result != NULL) {
+        return left_result;
+    }
+
+    return find_subtree_root(tree_node->right, subtree_root);
+}
+
+bool is_subtree_dfs(BinaryTree* tree, BinaryTree* subtree) {
+    binary_tree_check_valid(tree);
+    binary_tree_check_valid(subtree);
+
+    if (subtree->root == NULL) {
+        return true;
+    }
+
+    if (tree->root == NULL) {
+        return false;
+    }
+
+    return is_subtree_dfs_helper(find_subtree_root(tree->root, subtree->root), subtree->root);
+}

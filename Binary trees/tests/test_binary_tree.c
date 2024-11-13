@@ -526,7 +526,7 @@ void test_is_in_tree_bfs(void) {
 }
 
 void test_is_in_tree_dfs(void) {
-BinaryTree* tree = binary_tree_init();
+    BinaryTree* tree = binary_tree_init();
     binary_tree_insert_node_bfs(tree, 10);
     binary_tree_insert_node_bfs(tree, 5);
     binary_tree_insert_node_bfs(tree, 15);
@@ -846,8 +846,712 @@ void test_is_full_dfs(void) {
     free_tree_dfs(tree);
 }
 
+void test_is_complete_bfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_complete_bfs(tree) == true);
+
+    int total_nodes = 11;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_complete_bfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_complete_bfs(tree) == true);
+
+    nodes[0]->right = nodes[2];
+    assert(is_complete_bfs(tree) == true);
+
+    nodes[2]->left = nodes[3];
+    assert(is_complete_bfs(tree) == false);
+
+    nodes[1]->left = nodes[4];
+    assert(is_complete_bfs(tree) == false);
+
+    nodes[1]->right = nodes[5];
+    assert(is_complete_bfs(tree) == true);
+
+    nodes[4]->right = nodes[6];
+    assert(is_complete_bfs(tree) == false);
+
+    nodes[2]->right = nodes[7];
+    assert(is_complete_bfs(tree) == false);
+
+    nodes[4]->left = nodes[8];
+    assert(is_complete_bfs(tree) == true);
+
+    nodes[8]->left = nodes[9];
+    assert(is_complete_bfs(tree) == false);
+
+    nodes[9]->left = nodes[10];
+    assert(is_complete_bfs(tree) == false);
+
+    // 測試只有左子樹的樹
+    BinaryTree* left_tree = binary_tree_init();
+    left_tree->root = binary_tree_create_node(1);
+    left_tree->root->left = binary_tree_create_node(2);
+    left_tree->root->left->left = binary_tree_create_node(3);
+    assert(is_complete_bfs(left_tree) == false);
+    free_tree_bfs(left_tree);
+
+    // 測試只有右子樹的樹
+    BinaryTree* right_tree = binary_tree_init();
+    right_tree->root = binary_tree_create_node(1);
+    right_tree->root->right = binary_tree_create_node(2);
+    right_tree->root->right->right = binary_tree_create_node(3);
+    assert(is_complete_bfs(right_tree) == false);
+    free_tree_bfs(right_tree);
+
+    free_tree_bfs(tree);
+}
+
+void test_is_complete_dfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_complete_dfs(tree) == true);
+
+    int total_nodes = 11;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_complete_dfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_complete_dfs(tree) == true);
+
+    nodes[0]->right = nodes[2];
+    assert(is_complete_dfs(tree) == true);
+
+    nodes[2]->left = nodes[3];
+    assert(is_complete_dfs(tree) == false);
+
+    nodes[1]->left = nodes[4];
+    assert(is_complete_dfs(tree) == false);
+
+    nodes[1]->right = nodes[5];
+    assert(is_complete_dfs(tree) == true);
+
+    nodes[4]->right = nodes[6];
+    assert(is_complete_dfs(tree) == false);
+
+    nodes[2]->right = nodes[7];
+    assert(is_complete_dfs(tree) == false);
+
+    nodes[4]->left = nodes[8];
+    assert(is_complete_dfs(tree) == true);
+
+    nodes[8]->left = nodes[9];
+    assert(is_complete_dfs(tree) == false);
+
+    nodes[9]->left = nodes[10];
+    assert(is_complete_dfs(tree) == false);
+
+    // 測試只有左子樹的樹
+    BinaryTree* left_tree = binary_tree_init();
+    left_tree->root = binary_tree_create_node(1);
+    left_tree->root->left = binary_tree_create_node(2);
+    left_tree->root->left->left = binary_tree_create_node(3);
+    assert(is_complete_dfs(left_tree) == false);
+    free_tree_dfs(left_tree);
+
+    // 測試只有右子樹的樹
+    BinaryTree* right_tree = binary_tree_init();
+    right_tree->root = binary_tree_create_node(1);
+    right_tree->root->right = binary_tree_create_node(2);
+    right_tree->root->right->right = binary_tree_create_node(3);
+    assert(is_complete_dfs(right_tree) == false);
+    free_tree_dfs(right_tree);
+
+    free_tree_dfs(tree);
+}
+
+void test_is_perfect_bfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_perfect_bfs(tree) == true);
+
+    int total_nodes = 11;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_perfect_bfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_perfect_bfs(tree) == false);
+
+    nodes[0]->right = nodes[2];
+    assert(is_perfect_bfs(tree) == true);
+
+    nodes[2]->left = nodes[3];
+    assert(is_perfect_bfs(tree) == false);
+
+    nodes[1]->left = nodes[4];
+    assert(is_perfect_bfs(tree) == false);
+
+    nodes[1]->right = nodes[5];
+    assert(is_perfect_bfs(tree) == false);
+
+    nodes[2]->right = nodes[6];
+    assert(is_perfect_bfs(tree) == true);
+
+    nodes[4]->right = nodes[7];
+    assert(is_perfect_bfs(tree) == false);
+
+    nodes[4]->left = nodes[8];
+    assert(is_perfect_bfs(tree) == false);
+
+    nodes[8]->left = nodes[9];
+    assert(is_perfect_bfs(tree) == false);
+
+    nodes[9]->left = nodes[10];
+    assert(is_perfect_bfs(tree) == false);
+
+    // 測試只有左子樹的樹
+    BinaryTree* left_tree = binary_tree_init();
+    left_tree->root = binary_tree_create_node(1);
+    left_tree->root->left = binary_tree_create_node(2);
+    left_tree->root->left->left = binary_tree_create_node(3);
+    assert(is_perfect_bfs(left_tree) == false);
+    free_tree_bfs(left_tree);
+
+    // 測試只有右子樹的樹
+    BinaryTree* right_tree = binary_tree_init();
+    right_tree->root = binary_tree_create_node(1);
+    right_tree->root->right = binary_tree_create_node(2);
+    right_tree->root->right->right = binary_tree_create_node(3);
+    assert(is_perfect_bfs(right_tree) == false);
+    free_tree_bfs(right_tree);
+
+    free_tree_bfs(tree);
+}
+
+void test_is_perfect_dfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_perfect_dfs(tree) == true);
+
+    int total_nodes = 11;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_perfect_dfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_perfect_dfs(tree) == false);
+
+    nodes[0]->right = nodes[2];
+    assert(is_perfect_dfs(tree) == true);
+
+    nodes[2]->left = nodes[3];
+    assert(is_perfect_dfs(tree) == false);
+
+    nodes[1]->left = nodes[4];
+    assert(is_perfect_dfs(tree) == false);
+
+    nodes[1]->right = nodes[5];
+    assert(is_perfect_dfs(tree) == false);
+
+    nodes[2]->right = nodes[6];
+    assert(is_perfect_dfs(tree) == true);
+
+    nodes[4]->right = nodes[7];
+    assert(is_perfect_dfs(tree) == false);
+
+    nodes[4]->left = nodes[8];
+    assert(is_perfect_dfs(tree) == false);
+
+    nodes[8]->left = nodes[9];
+    assert(is_perfect_dfs(tree) == false);
+
+    nodes[9]->left = nodes[10];
+    assert(is_perfect_dfs(tree) == false);
+
+    // 測試只有左子樹的樹
+    BinaryTree* left_tree = binary_tree_init();
+    left_tree->root = binary_tree_create_node(1);
+    left_tree->root->left = binary_tree_create_node(2);
+    left_tree->root->left->left = binary_tree_create_node(3);
+    assert(is_perfect_dfs(left_tree) == false);
+    free_tree_dfs(left_tree);
+
+    // 測試只有右子樹的樹
+    BinaryTree* right_tree = binary_tree_init();
+    right_tree->root = binary_tree_create_node(1);
+    right_tree->root->right = binary_tree_create_node(2);
+    right_tree->root->right->right = binary_tree_create_node(3);
+    assert(is_perfect_dfs(right_tree) == false);
+    free_tree_dfs(right_tree);
+
+    free_tree_dfs(tree);
+}
+
+void test_is_balanced_bfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_balanced_bfs(tree) == true); // 空樹應該被認為是平衡的
+
+    int total_nodes = 7;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_balanced_bfs(tree) == true); // 只有一個節點的樹應該被認為是平衡的
+
+    nodes[0]->left = nodes[1];
+    assert(is_balanced_bfs(tree) == true);
+
+    nodes[0]->right = nodes[2];
+    assert(is_balanced_bfs(tree) == true);
+
+    nodes[1]->left = nodes[3];
+    assert(is_balanced_bfs(tree) == true);
+
+    nodes[3]->left = nodes[4];
+    assert(is_balanced_bfs(tree) == false);
+
+    nodes[2]->right = nodes[5];
+    assert(is_balanced_bfs(tree) == false);
+
+    nodes[1]->right = nodes[6];
+    assert(is_balanced_bfs(tree) == true);
+
+    free_tree_bfs(tree);
+}
+
+void test_is_balanced_dfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_balanced_bfs(tree) == true); // 空樹應該被認為是平衡的
+
+    int total_nodes = 7;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_balanced_bfs(tree) == true); // 只有一個節點的樹應該被認為是平衡的
+
+    nodes[0]->left = nodes[1];
+    assert(is_balanced_bfs(tree) == true);
+
+    nodes[0]->right = nodes[2];
+    assert(is_balanced_bfs(tree) == true);
+
+    nodes[1]->left = nodes[3];
+    assert(is_balanced_bfs(tree) == true);
+
+    nodes[3]->left = nodes[4];
+    assert(is_balanced_bfs(tree) == false);
+
+    nodes[2]->right = nodes[5];
+    assert(is_balanced_bfs(tree) == false);
+
+    nodes[1]->right = nodes[6];
+    assert(is_balanced_bfs(tree) == true);
+
+    free_tree_dfs(tree);
+}
+
+void test_is_skewed_bfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_skewed_bfs(tree) == true);
+
+    int total_nodes = 5;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_skewed_bfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_skewed_bfs(tree) == true);
+
+    nodes[1]->left = nodes[2];
+    assert(is_skewed_bfs(tree) == true);
+
+    nodes[2]->left = nodes[3];
+    assert(is_skewed_bfs(tree) == true);
+
+    nodes[2]->right = nodes[4];
+    assert(is_skewed_bfs(tree) == false);
+
+
+    nodes[0]->left = nodes[0]->right = NULL;
+    nodes[1]->left = nodes[1]->right = NULL;
+    nodes[2]->left = nodes[2]->right = NULL;
+    nodes[3]->left = nodes[3]->right = NULL;
+    nodes[4]->left = nodes[4]->right = NULL;
+
+    tree->root = nodes[0];
+    assert(is_skewed_bfs(tree) == true);
+
+    nodes[0]->right = nodes[1];
+    assert(is_skewed_bfs(tree) == true);
+
+    nodes[1]->right = nodes[2];
+    assert(is_skewed_bfs(tree) == true);
+
+    nodes[2]->right = nodes[3];
+    assert(is_skewed_bfs(tree) == true);
+
+    nodes[2]->left = nodes[4];
+    assert(is_skewed_bfs(tree) == false);
+
+    nodes[0]->left = nodes[0]->right = NULL;
+    nodes[1]->left = nodes[1]->right = NULL;
+    nodes[2]->left = nodes[2]->right = NULL;
+    nodes[3]->left = nodes[3]->right = NULL;
+    nodes[4]->left = nodes[4]->right = NULL;
+
+    tree->root = nodes[0];
+    assert(is_skewed_bfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_skewed_bfs(tree) == true);
+
+    nodes[0]->right = nodes[2];
+    assert(is_skewed_bfs(tree) == false);
+
+    nodes[1]->left = nodes[3];
+    assert(is_skewed_bfs(tree) == false);
+
+    nodes[2]->right = nodes[4];
+    assert(is_skewed_bfs(tree) == false);
+
+    free_tree_bfs(tree);
+}
+
+void test_is_skewed_dfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_skewed_dfs(tree) == true);
+
+    int total_nodes = 5;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_skewed_dfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_skewed_dfs(tree) == true);
+
+    nodes[1]->left = nodes[2];
+    assert(is_skewed_dfs(tree) == true);
+
+    nodes[2]->left = nodes[3];
+    assert(is_skewed_dfs(tree) == true);
+
+    nodes[2]->right = nodes[4];
+    assert(is_skewed_dfs(tree) == false);
+
+
+    nodes[0]->left = nodes[0]->right = NULL;
+    nodes[1]->left = nodes[1]->right = NULL;
+    nodes[2]->left = nodes[2]->right = NULL;
+    nodes[3]->left = nodes[3]->right = NULL;
+    nodes[4]->left = nodes[4]->right = NULL;
+
+    tree->root = nodes[0];
+    assert(is_skewed_dfs(tree) == true);
+
+    nodes[0]->right = nodes[1];
+    assert(is_skewed_dfs(tree) == true);
+
+    nodes[1]->right = nodes[2];
+    assert(is_skewed_dfs(tree) == true);
+
+    nodes[2]->right = nodes[3];
+    assert(is_skewed_dfs(tree) == true);
+
+    nodes[2]->left = nodes[4];
+    assert(is_skewed_dfs(tree) == false);
+
+    nodes[0]->left = nodes[0]->right = NULL;
+    nodes[1]->left = nodes[1]->right = NULL;
+    nodes[2]->left = nodes[2]->right = NULL;
+    nodes[3]->left = nodes[3]->right = NULL;
+    nodes[4]->left = nodes[4]->right = NULL;
+
+    tree->root = nodes[0];
+    assert(is_skewed_dfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_skewed_dfs(tree) == true);
+
+    nodes[0]->right = nodes[2];
+    assert(is_skewed_dfs(tree) == false);
+
+    nodes[1]->left = nodes[3];
+    assert(is_skewed_dfs(tree) == false);
+
+    nodes[2]->right = nodes[4];
+    assert(is_skewed_dfs(tree) == false);
+
+    free_tree_dfs(tree);
+}
+
+void test_is_left_skewed_bfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_left_skewed_bfs(tree) == true);
+
+    int total_nodes = 5;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_left_skewed_bfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_left_skewed_bfs(tree) == true);
+
+    nodes[1]->left = nodes[2];
+    assert(is_left_skewed_bfs(tree) == true);
+
+    nodes[2]->left = nodes[3];
+    assert(is_left_skewed_bfs(tree) == true);
+
+    nodes[1]->right = nodes[4];
+    assert(is_left_skewed_bfs(tree) == false);
+
+    nodes[0]->left = nodes[0]->right = NULL;
+    nodes[1]->left = nodes[1]->right = NULL;
+    nodes[2]->left = nodes[2]->right = NULL;
+    nodes[3]->left = nodes[3]->right = NULL;
+    nodes[4]->left = nodes[4]->right = NULL;
+
+    tree->root = nodes[0];
+    assert(is_left_skewed_bfs(tree) == true);
+
+    nodes[0]->right = nodes[1];
+    assert(is_left_skewed_bfs(tree) == false);
+
+    free_tree_bfs(tree);
+}
+
+void test_is_left_skewed_dfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_left_skewed_dfs(tree) == true);
+
+    int total_nodes = 5;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_left_skewed_dfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_left_skewed_dfs(tree) == true);
+
+    nodes[1]->left = nodes[2];
+    assert(is_left_skewed_dfs(tree) == true);
+
+    nodes[2]->left = nodes[3];
+    assert(is_left_skewed_dfs(tree) == true);
+
+    nodes[1]->right = nodes[4];
+    assert(is_left_skewed_dfs(tree) == false);
+
+    nodes[0]->left = nodes[0]->right = NULL;
+    nodes[1]->left = nodes[1]->right = NULL;
+    nodes[2]->left = nodes[2]->right = NULL;
+    nodes[3]->left = nodes[3]->right = NULL;
+    nodes[4]->left = nodes[4]->right = NULL;
+
+    tree->root = nodes[0];
+    assert(is_left_skewed_dfs(tree) == true);
+
+    nodes[0]->right = nodes[1];
+    assert(is_left_skewed_dfs(tree) == false);
+
+    free_tree_dfs(tree);
+}
+
+void test_is_right_skewed_bfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_right_skewed_bfs(tree) == true);
+
+    int total_nodes = 5;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_right_skewed_bfs(tree) == true);
+
+    nodes[0]->right = nodes[1];
+    assert(is_right_skewed_bfs(tree) == true);
+
+    nodes[1]->right = nodes[2];
+    assert(is_right_skewed_bfs(tree) == true);
+
+    nodes[2]->right = nodes[3];
+    assert(is_right_skewed_bfs(tree) == true);
+
+    nodes[1]->left = nodes[4];
+    assert(is_right_skewed_bfs(tree) == false);
+
+    nodes[0]->right = nodes[0]->left = NULL;
+    nodes[1]->right = nodes[1]->left = NULL;
+    nodes[2]->right = nodes[2]->left = NULL;
+    nodes[3]->right = nodes[3]->left = NULL;
+    nodes[4]->right = nodes[4]->left = NULL;
+
+    tree->root = nodes[0];
+    assert(is_right_skewed_bfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_right_skewed_bfs(tree) == false);
+
+    free_tree_bfs(tree);
+}
+
+void test_is_right_skewed_dfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    assert(is_right_skewed_dfs(tree) == true);
+
+    int total_nodes = 5;
+    BinaryTreeNode* nodes[total_nodes];
+    for (int i = 0; i < total_nodes; i++) {
+        nodes[i] = binary_tree_create_node(i);
+    }
+
+    tree->root = nodes[0];
+    assert(is_right_skewed_dfs(tree) == true);
+
+    nodes[0]->right = nodes[1];
+    assert(is_right_skewed_dfs(tree) == true);
+
+    nodes[1]->right = nodes[2];
+    assert(is_right_skewed_dfs(tree) == true);
+
+    nodes[2]->right = nodes[3];
+    assert(is_right_skewed_dfs(tree) == true);
+
+    nodes[1]->left = nodes[4];
+    assert(is_right_skewed_dfs(tree) == false);
+
+    nodes[0]->right = nodes[0]->left = NULL;
+    nodes[1]->right = nodes[1]->left = NULL;
+    nodes[2]->right = nodes[2]->left = NULL;
+    nodes[3]->right = nodes[3]->left = NULL;
+    nodes[4]->right = nodes[4]->left = NULL;
+
+    tree->root = nodes[0];
+    assert(is_right_skewed_dfs(tree) == true);
+
+    nodes[0]->left = nodes[1];
+    assert(is_right_skewed_dfs(tree) == false);
+
+    free_tree_dfs(tree);
+}
+
+void test_is_subtree_bfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    binary_tree_insert_node_bfs(tree, 10);
+    binary_tree_insert_node_bfs(tree, 5);
+    binary_tree_insert_node_bfs(tree, 15);
+    binary_tree_insert_node_bfs(tree, 3);
+    binary_tree_insert_node_bfs(tree, 7);
+    binary_tree_insert_node_bfs(tree, 12);
+    binary_tree_insert_node_bfs(tree, 18);
+
+    BinaryTree* subtree1 = binary_tree_init();
+    binary_tree_insert_node_bfs(subtree1, 5);
+    binary_tree_insert_node_bfs(subtree1, 3);
+    binary_tree_insert_node_bfs(subtree1, 7);
+    assert(is_subtree_bfs(tree, subtree1) == true);
+
+    BinaryTree* subtree2 = binary_tree_init();
+    binary_tree_insert_node_bfs(subtree2, 15);
+    binary_tree_insert_node_bfs(subtree2, 12);
+    binary_tree_insert_node_bfs(subtree2, 18);
+    assert(is_subtree_bfs(tree, subtree2) == true);
+
+    BinaryTree* subtree3 = binary_tree_init();
+    binary_tree_insert_node_bfs(subtree3, 5);
+    binary_tree_insert_node_bfs(subtree3, 3);
+    binary_tree_insert_node_bfs(subtree3, 8);
+    assert(is_subtree_bfs(tree, subtree3) == false);
+
+    BinaryTree* subtree4 = binary_tree_init();
+    binary_tree_insert_node_bfs(subtree4, 20);
+    assert(is_subtree_bfs(tree, subtree4) == false);
+
+    BinaryTree* subtree5 = binary_tree_init();
+    binary_tree_insert_node_bfs(subtree5, 18);
+    assert(is_subtree_bfs(tree, subtree5) == true);
+
+    free_tree_bfs(tree);
+    free_tree_bfs(subtree1);
+    free_tree_bfs(subtree2);
+    free_tree_bfs(subtree3);
+    free_tree_bfs(subtree4);
+    free_tree_bfs(subtree5);
+}
+
+void test_is_subtree_dfs(void) {
+    BinaryTree* tree = binary_tree_init();
+    binary_tree_insert_node_bfs(tree, 10);
+    binary_tree_insert_node_bfs(tree, 5);
+    binary_tree_insert_node_bfs(tree, 15);
+    binary_tree_insert_node_bfs(tree, 3);
+    binary_tree_insert_node_bfs(tree, 7);
+    binary_tree_insert_node_bfs(tree, 12);
+    binary_tree_insert_node_bfs(tree, 18);
+
+    BinaryTree* subtree1 = binary_tree_init();
+    binary_tree_insert_node_bfs(subtree1, 5);
+    binary_tree_insert_node_bfs(subtree1, 3);
+    binary_tree_insert_node_bfs(subtree1, 7);
+    assert(is_subtree_dfs(tree, subtree1) == true);
+
+    BinaryTree* subtree2 = binary_tree_init();
+    binary_tree_insert_node_bfs(subtree2, 15);
+    binary_tree_insert_node_bfs(subtree2, 12);
+    binary_tree_insert_node_bfs(subtree2, 18);
+    assert(is_subtree_dfs(tree, subtree2) == true);
+
+    BinaryTree* subtree3 = binary_tree_init();
+    binary_tree_insert_node_bfs(subtree3, 5);
+    binary_tree_insert_node_bfs(subtree3, 3);
+    binary_tree_insert_node_bfs(subtree3, 8);
+    assert(is_subtree_dfs(tree, subtree3) == false);
+
+    BinaryTree* subtree4 = binary_tree_init();
+    binary_tree_insert_node_bfs(subtree4, 20);
+    assert(is_subtree_dfs(tree, subtree4) == false);
+
+    BinaryTree* subtree5 = binary_tree_init();
+    binary_tree_insert_node_bfs(subtree5, 18);
+    assert(is_subtree_dfs(tree, subtree5) == true);
+
+    free_tree_dfs(tree);
+    free_tree_dfs(subtree1);
+    free_tree_dfs(subtree2);
+    free_tree_dfs(subtree3);
+    free_tree_dfs(subtree4);
+    free_tree_dfs(subtree5);
+}
 void run_all_test(void) {
-    test_insert_node_bfs();
     test_insert_node_bfs();
     test_find_node_bfs();
     test_find_node_dfs();
@@ -884,6 +1588,20 @@ void run_all_test(void) {
     test_is_cousin();
     test_is_full_bfs();
     test_is_full_dfs();
+    test_is_complete_bfs();
+    test_is_complete_dfs();
+    test_is_perfect_bfs();
+    test_is_perfect_dfs();
+    test_is_balanced_bfs();
+    test_is_balanced_dfs();
+    test_is_skewed_bfs();
+    test_is_skewed_dfs();
+    test_is_left_skewed_bfs();
+    test_is_left_skewed_dfs();
+    test_is_right_skewed_dfs();
+    test_is_right_skewed_dfs();
+    test_is_subtree_bfs();
+    test_is_subtree_dfs();
 }
 
 int main(void) {

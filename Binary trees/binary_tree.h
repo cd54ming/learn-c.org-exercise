@@ -65,24 +65,30 @@ bool is_cousin(BinaryTree* tree, BinaryTreeNode* node1, BinaryTreeNode* node2);
 bool is_full_bfs(BinaryTree* tree);
 bool is_full_dfs(BinaryTree* tree);
 
-// all the levels are completely filled except possibly for the last level
-bool is_complete(BinaryTree* tree);
+// all the levels are completely filled except possibly for the last level, which is filled from left to right.
+bool is_complete_bfs(BinaryTree* tree);
+bool is_complete_dfs(BinaryTree* tree);
 
-// ------------------------ TODO ------------------------
 // all the leaf nodes are at the same level, and all the non-leaf nodes have exactly 2 children
-bool is_perfect(BinaryTreeNode* root);
+bool is_perfect_bfs(BinaryTree* tree);
+bool is_perfect_dfs(BinaryTree* tree);
 
 // the difference between the heights of the left and right subtrees of every node is not more than 1
-bool is_balanced(BinaryTreeNode* root);
+bool is_balanced_bfs(BinaryTree* tree);
+bool is_balanced_dfs(BinaryTree* tree);
 
 // a tree where each node has only one child node or none  
-bool is_skewed(BinaryTreeNode* root);
+bool is_skewed_bfs(BinaryTree* tree);
+bool is_skewed_dfs(BinaryTree* tree);
 
 // a tree where each node has only one child node or none and the child is always on the left
-bool is_left_skewed(BinaryTreeNode* root);
+bool is_left_skewed_bfs(BinaryTree* tree);
+bool is_left_skewed_dfs(BinaryTree* tree);
 
 // a tree where each node has only one child node or none and the child is always on the right
-bool is_right_skewed(BinaryTreeNode* root);
+bool is_right_skewed_bfs(BinaryTree* tree);
+bool is_right_skewed_dfs(BinaryTree* tree);
 
-bool is_subtree(BinaryTree* tree1, BinaryTree* tree2);
+bool is_subtree_bfs(BinaryTree* tree, BinaryTree* subtree);
+bool is_subtree_dfs(BinaryTree* tree, BinaryTree* subtree);
 #endif // BINARY_TREE_UTILS_H
